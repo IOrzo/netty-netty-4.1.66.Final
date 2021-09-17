@@ -16,10 +16,7 @@
 package io.netty.example.discard;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -63,7 +60,10 @@ public final class DiscardServer {
                      }
                      p.addLast(new DiscardServerHandler());
                  }
-             });
+             })
+            .option(ChannelOption.SO_BACKLOG, 128) // 你注意到 option ()和 childOption ()了吗？Option ()用于接受传入连接的 NioServerSocketChannel。
+            .childOption(ChannelOption.SO_KEEPALIVE, true) // childOption ()用于父 ServerChannel 接受的通道，在本例中是 NioSocketChannel。
+            ;
 
             // Bind and start to accept incoming connections.
             ChannelFuture f = b.bind(PORT).sync();
