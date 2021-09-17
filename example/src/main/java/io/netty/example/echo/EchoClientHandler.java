@@ -46,6 +46,16 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        // 打印出读的内容
+        ByteBuf byteBuf = (ByteBuf) msg;
+        System.out.println(msg);
+        while (byteBuf.isReadable()) {
+            System.out.print(byteBuf.readByte());
+        }
+        System.out.println();
+        System.out.println("读取完毕");
+        System.out.println(byteBuf);
+        byteBuf.resetReaderIndex();
         ctx.write(msg);
     }
 
